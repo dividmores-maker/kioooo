@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لوحة التحكم - كنيسة مارجرجس بالكابلات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ألوان ومظهر متناسق مع الموقع (ذهبي - رمادي - بيج) */
+    :root{
+      --gold: #C8A951;
+      --dark: #2B2B2B;
+      --bg: #F6F3EE;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Cairo", sans-serif;
+      background: var(--bg);
+      padding: 20px;
+      margin: 0;
+      color: var(--dark);
+    }
+    .dashboard {
+      max-width: 920px;
+      margin: 30px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+    }
+    .dashboard h2 {
+      text-align: center;
+      color: var(--dark);
+      margin: 0 0 30px;
+      font-size: 24px;
+    }
+
+    .row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .col {
+      flex: 1 1 320px;
+      min-width: 280px;
+    }
+
+    label { 
+      display: block; 
+      margin: 12px 0 8px; 
+      font-weight: 600;
+      color: var(--dark);
+    }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 2px solid #eee;
+      background: #fff;
+      font-size: 15px;
+      font-family: "Cairo", sans-serif;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    input[type="text"]:focus, textarea:focus, select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 4px 12px rgba(200,169,81,0.15);
+    }
+    textarea { 
+      min-height: 120px; 
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .file-input {
+      padding: 30px 20px;
+      border-radius: 10px;
+      border: 2px dashed #d0d0d0;
+      background: #fafafa;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #666;
+    }
+    .file-input:hover {
+      border-color: var(--gold);
+      background: #fff;
+    }
+    .file-input.dragover {
+      border-color: var(--gold);
+      background: #fffbf0;
+    }
+    .file-input input { display: none; }
+
+    .preview {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .preview-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .preview img, .preview video {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+    .preview-item .remove-btn {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #c00;
+      padding: 0;
+      transition: all 0.2s ease;
+    }
+    .preview-item .remove-btn:hover {
+      background: #fff;
+      transform: scale(1.1);
+    }
+
+    .actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    button {
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-family: "Cairo", sans-serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 15px;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    button:not(:disabled):hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 20px rgba(200,169,81,0.3);
+    }
+    button.secondary {
+      background: transparent;
+      border: 2px solid #ddd;
+      color: var(--dark);
+      font-weight: 600;
+    }
+    button.secondary:not(:disabled):hover {
+      border-color: var(--gold);
+      background: #fafafa;
+    }
+
+    .hint { 
+      font-size: 13px; 
+      color: #888; 
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .success-message, .error-message {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+      display: none;
+    }
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .success-message.show, .error-message.show {
+      display: block;
+    }
+
+    @media (max-width: 720px){
+      .dashboard {
+        padding: 20px;
+      }
+      .row { 
+        flex-direction: column; 
+      }
+      .actions { 
+        justify-content: center; 
+      }
+      button {
+        flex: 1;
+        min-width: 140px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard">
+    <h2>📋 لوحة التحكم — كنيسة مارجرجس بالكابلات</h2>
+
+    <div class="success-message" id="successMsg"></div>
+    <div class="error-message" id="errorMsg"></div>
+
+    <div class="row">
+      <div class="col">
+        <label>اختر القسم *</label>
+        <select id="collection">
+          <option value="news">الأخبار</option>
+          <option value="masses">القداسات</option>
+          <option value="sermons">العظات</option>
+          <option value="services">الخدمات</option>
+          <option value="gallery">معرض الصور</option>
+        </select>
+
+        <label>العنوان *</label>
+        <input type="text" id="title" placeholder="ضع عنوان المحتوى">
+
+        <label>الوصف</label>
+        <textarea id="desc" placeholder="أدخل وصف أو تفاصيل المحتوى"></textarea>
+      </div>
+
+      <div class="col">
+        <label>رفع وسائط (صور أو فيديو)</label>
+
+        <div class="file-input" id="fileDrop">
+          <div style="font-size: 40px; margin-bottom: 10px;">📁</div>
+          اضغط أو اسحب الملفات هنا
+          <input type="file" id="media" multiple accept="image/*,video/*">
+        </div>
+
+        <div class="hint">يمكنك رفع صور متعددة أو فيديو. إذا لم ترفع وسائط سيُحفظ المحتوى كنصي فقط.</div>
+
+        <div class="preview" id="preview"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="saveBtn">💾 إضافة المحتوى</button>
+      <button class="secondary" id="clearBtn">🗑️ مسح الحقول</button>
+    </div>
+  </div>
+
+  <script type="module">
+    // محاكاة Firebase - في الواقع يجب استيراد Firebase الحقيقي
+    // هذا مثال توضيحي فقط
+    
+    const mediaInput = document.getElementById('media');
+    const preview = document.getElementById('preview');
+    const fileDrop = document.getElementById('fileDrop');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+
+    let selectedFiles = [];
+
+    // وظائف الرسائل
+    function showSuccess(msg) {
+      successMsg.textContent = msg;
+      successMsg.classList.add('show');
+      errorMsg.classList.remove('show');
+      setTimeout(() => successMsg.classList.remove('show'), 5000);
+    }
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.add('show');
+      successMsg.classList.remove('show');
+    }
+
+    // السحب والإفلات
+    fileDrop.addEventListener('click', () => mediaInput.click());
+    
+    fileDrop.addEventListener('dragover', (e) => { 
+      e.preventDefault(); 
+      fileDrop.classList.add('dragover');
+    });
+    
+    fileDrop.addEventListener('dragleave', () => {
+      fileDrop.classList.remove('dragover');
+    });
+    
+    fileDrop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileDrop.classList.remove('dragover');
+      
+      if (e.dataTransfer?.files) {
+        const dt = new DataTransfer();
+        Array.from(e.dataTransfer.files).forEach(file => dt.items.add(file));
+        mediaInput.files = dt.files;
+        updateSelectedFiles();
+      }
+    });
+
+    mediaInput.addEventListener('change', updateSelectedFiles);
+
+    function updateSelectedFiles() {
+      selectedFiles = Array.from(mediaInput.files || []);
+      showPreview();
+    }
+
+    function showPreview() {
+      preview.innerHTML = '';
+      
+      selectedFiles.forEach((file, index) => {
+        const url = URL.createObjectURL(file);
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        
+        if (file.type.startsWith('video')) {
+          item.innerHTML = `
+            <video src="${url}" controls></video>
+            <button class="remove-btn" data-index="${index}">✕</button>
+          `;
+        } else {
+          item.innerHTML = `
+            <img src="${url}" alt="معاينة">
+            <button class="remove-btn" data-index="${index}">✕</button>
+          `;
+        }
+        
+        preview.appendChild(item);
+      });
+
+      // إضافة مستمعات لأزرار الحذف
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const index = parseInt(btn.dataset.index);
+          removeFile(index);
+        });
+      });
+    }
+
+    function removeFile(index) {
+      selectedFiles.splice(index, 1);
+      
+      // تحديث input files
+      const dt = new DataTransfer();
+      selectedFiles.forEach(file => dt.items.add(file));
+      mediaInput.files = dt.files;
+      
+      showPreview();
+    }
+
+    clearBtn.addEventListener('click', () => {
+      document.getElementById('title').value = '';
+      document.getElementById('desc').value = '';
+      mediaInput.value = '';
+      selectedFiles = [];
+      preview.innerHTML = '';
+      successMsg.classList.remove('show');
+      errorMsg.classList.remove('show');
+    });
+
+    saveBtn.addEventListener('click', async () => {
+      const collectionName = document.getElementById('collection').value;
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('desc').value.trim();
+
+      if (!title) { 
+        showError('⚠️ يجب كتابة العنوان أولاً');
+        return; 
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = '⏳ جاري الحفظ...';
+
+      try {
+        // محاكاة عملية الحفظ - في الواقع تستدعي Firebase
+        await simulateSave(collectionName, title, description, selectedFiles);
+        
+        showSuccess('✅ تم إضافة المحتوى بنجاح!');
+        
+        // مسح الحقول بعد الحفظ الناجح
+        setTimeout(() => {
+          clearBtn.click();
+        }, 1000);
+        
+      } catch (err) {
+        console.error('خطأ في الحفظ:', err);
+        showError('❌ حدث خطأ أثناء الحفظ. يرجى المحاولة مرة أخرى.');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 إضافة المحتوى';
+      }
+    });
+
+    // دالة محاكاة - استبدلها بكود Firebase الحقيقي
+    async function simulateSave(collection, title, description, files) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log('تم الحفظ في:', collection);
+          console.log('العنوان:', title);
+          console.log('الوصف:', description);
+          console.log('عدد الملفات:', files.length);
+          resolve();
+        }, 1500);
+      });
+    }
+
+    // في التطبيق الحقيقي، استخدم هذا الكود مع Firebase:
+    /*
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js';
+    import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js';
+
+    const firebaseConfig = {
+      // ضع إعدادات Firebase هنا
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    async function uploadMedia(files) {
+      const urls = [];
+      for (const file of files) {
+        const storageRef = ref(storage, `media/${Date.now()}_${file.name}`);
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        urls.push(url);
+      }
+      return urls;
+    }
+
+    async function addData(collectionName, title, description, files) {
+      let mediaUrls = [];
+      if (files && files.length > 0) {
+        mediaUrls = await uploadMedia(files);
+      }
+      
+      await addDoc(collection(db, collectionName), {
+        title,
+        description,
+        mediaUrls,
+        createdAt: new Date()
+      });
+    }
+    */
+  </script>
+</body>
+</html>

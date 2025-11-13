@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>العظات - كنيسة مارجرجس بالكابلات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #F6F3EE; 
+      color: #2B2B2B;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header { 
+      background: linear-gradient(135deg, #2B2B2B 0%, #3d3d3d 100%);
+      color: #fff; 
+      padding: 25px 5%; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header h1 { 
+      color: #C8A951; 
+      font-weight: 700; 
+      font-size: 28px; 
+      margin-bottom: 15px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    nav { 
+      display: flex; 
+      justify-content: center; 
+      flex-wrap: wrap; 
+      gap: 15px; 
+    }
+    nav a { 
+      color: #fff; 
+      text-decoration: none; 
+      font-weight: 600; 
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    nav a:hover, nav a.active { 
+      background: #C8A951; 
+      color: #2B2B2B;
+      transform: translateY(-2px);
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 60px 8%;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Page Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .page-header h2 {
+      color: #2B2B2B;
+      font-size: 36px;
+      margin-bottom: 15px;
+      border-bottom: 4px solid #C8A951;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    .page-header p {
+      color: #666;
+      font-size: 18px;
+      margin-top: 15px;
+      line-height: 1.6;
+    }
+
+    /* Sermons Grid */
+    .sermons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    /* Sermon Card */
+    .sermon-card {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .sermon-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+    }
+    
+    .sermon-media {
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(135deg, #C8A951 0%, #a08840 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .sermon-media img, .sermon-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sermon-media::after {
+      content: '📖';
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 40px;
+      opacity: 0.3;
+    }
+    
+    .sermon-content {
+      padding: 25px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .sermon-card h3 {
+      color: #C8A951;
+      font-size: 22px;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+    .sermon-card p {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 15px;
+      flex-grow: 1;
+    }
+    .sermon-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 2px solid #f0f0f0;
+      font-size: 14px;
+      color: #888;
+      gap: 10px;
+    }
+    .sermon-date {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .sermon-speaker {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #C8A951;
+      font-weight: 600;
+    }
+
+    /* Loading & Empty States */
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      font-size: 20px;
+      color: #888;
+      grid-column: 1 / -1;
+    }
+    .loading-spinner {
+      font-size: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #999;
+      grid-column: 1 / -1;
+    }
+    .empty-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    .empty-state h3 {
+      font-size: 24px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    /* Firebase Status */
+    .firebase-status {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      z-index: 9999;
+      display: none;
+    }
+    .firebase-status.show { display: block; }
+    .firebase-status.connected { background: #28a745; }
+    .firebase-status.error { background: #dc3545; }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #2B2B2B 0%, #1a1a1a 100%);
+      color: #fff;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+      margin-top: auto;
+    }
+    footer p {
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+    .admin-link {
+      display: inline-block;
+      background: #C8A951;
+      color: #2B2B2B;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .admin-link:hover {
+      background: #7A6C4D;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 { font-size: 22px; }
+      .page-header h2 { font-size: 28px; }
+      main { padding: 40px 5%; }
+      .sermons-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      nav {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="firebase-status" id="firebaseStatus">🔄 جاري الاتصال...</div>
+
+<header>
+  <div class="container">
+    <h1>⛪ كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</h1>
+    <nav>
+      <a href="index.html">🏠 الرئيسية</a>
+      <a href="about.html">ℹ️ عن الكنيسة</a>
+      <a href="masses.html">🕊️ القداسات</a>
+      <a href="sermons.html" class="active">📖 العظات</a>
+      <a href="gallery.html">📸 معرض الصور</a>
+      <a href="contact.html">📞 تواصل معنا</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="page-header">
+    <h2>📖 العظات والتعاليم</h2>
+    <p>استمع إلى العظات والتعاليم الروحية من كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</p>
+  </div>
+
+  <div class="sermons-grid" id="sermonsContainer">
+    <div class="loading">
+      <div class="loading-spinner">⏳</div>
+      <p>جاري تحميل العظات...</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات • جميع الحقوق محفوظة</p>
+  <a href="#" onclick="checkAdminAccess(event)" class="admin-link">🔐 لوحة التحكم</a>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+ const firebaseConfig = {
+    apiKey: "AIzaSyCHpkIlf8A13cL6TLggr7-3u8FM-PxzfSY",
+    authDomain: "activitiescommittee-5b22c.firebaseapp.com",
+    projectId: "activitiescommittee-5b22c",
+    storageBucket: "activitiescommittee-5b22c.firebasestorage.app",
+    messagingSenderId: "378991885059",
+    appId: "1:378991885059:web:d8db039a6fc569fffb8736"
+  };
+
+let app, db, isFirebaseConnected = false;
+
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  isFirebaseConnected = true;
+  showFirebaseStatus('✅ متصل بـ Firebase', 'connected');
+} catch (error) {
+  console.error('❌ خطأ في الاتصال:', error);
+  showFirebaseStatus('❌ خطأ في الاتصال', 'error');
+}
+
+function showFirebaseStatus(message, type) {
+  const status = document.getElementById('firebaseStatus');
+  status.textContent = message;
+  status.className = `firebase-status show ${type}`;
+  setTimeout(() => status.classList.remove('show'), 3000);
+}
+
+async function loadSermons() {
+  const container = document.getElementById('sermonsContainer');
+
+  try {
+    let sermons = [];
+
+    if (isFirebaseConnected) {
+      const q = query(collection(db, 'sermons'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      sermons = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } else {
+      sermons = getMockSermons();
+    }
+
+    if (sermons.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📖</div>
+          <h3>لا توجد عظات محفوظة</h3>
+          <p>سيتم إضافة العظات قريباً</p>
+        </div>
+      `;
+    } else {
+      container.innerHTML = sermons.map(sermon => renderSermonCard(sermon)).join('');
+    }
+  } catch (error) {
+    console.error('❌ خطأ في التحميل:', error);
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <h3>حدث خطأ في تحميل البيانات</h3>
+        <p>يرجى المحاولة مرة أخرى</p>
+      </div>
+    `;
+  }
+}
+
+function renderSermonCard(sermon) {
+  const hasMedia = sermon.mediaUrls && sermon.mediaUrls.length > 0;
+  const mediaUrl = hasMedia ? sermon.mediaUrls[0] : '';
+  const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+
+  return `
+    <div class="sermon-card">
+      <div class="sermon-media">
+        ${hasMedia ? (isVideo ? 
+          `<video src="${mediaUrl}" controls></video>` :
+          `<img src="${mediaUrl}" alt="${sermon.title}" loading="lazy">`) : 
+          ''
+        }
+      </div>
+      <div class="sermon-content">
+        <h3>${sermon.title}</h3>
+        <p>${sermon.description || 'لا يوجد وصف'}</p>
+        <div class="sermon-meta">
+          <span class="sermon-date">
+            📅 ${formatDate(sermon.createdAt)}
+          </span>
+          ${sermon.speaker ? `
+            <span class="sermon-speaker">
+              👤 ${sermon.speaker}
+            </span>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function getMockSermons() {
+  return [
+    {
+      id: '1',
+      title: 'الإيمان والرجاء',
+      description: 'عظة عن أهمية الإيمان والرجاء في حياة المؤمن وكيفية تطبيقهما في الحياة اليومية',
+      speaker: 'أبونا يوسف',
+      createdAt: new Date(2025, 0, 15).toISOString()
+    },
+    {
+      id: '2',
+      title: 'المحبة والغفران',
+      description: 'تعاليم روحية عن المحبة الحقيقية والغفران من القلب',
+      speaker: 'أبونا بولس',
+      createdAt: new Date(2025, 0, 8).toISOString()
+    },
+    {
+      id: '3',
+      title: 'الصلاة والتأمل',
+      description: 'كيف نصلي بروح وحق ونتأمل في كلمة الله',
+      speaker: 'أبونا يوسف',
+      createdAt: new Date(2025, 0, 1).toISOString()
+    }
+  ];
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr.toDate();
+  return date.toLocaleDateString('ar-EG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+window.checkAdminAccess = function(event) {
+  event.preventDefault();
+  const password = prompt("🔐 ادخل كلمة المرور:");
+  if (password === "12345") {
+    window.location.href = "dashboard.html";
+  } else if (password !== null) {
+    alert("❌ كلمة المرور خاطئة!");
+  }
+};
+
+window.addEventListener('DOMContentLoaded', loadSermons);
+setInterval(loadSermons, 5 * 60 * 1000);
+</script>
+
+</body>
+</html>

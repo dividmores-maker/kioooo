@@ -1,0 +1,2562 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>معرض الصور - كنيسة مارجرجس بالكابلات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #F6F3EE; 
+      color: #2B2B2B;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header { 
+      background: linear-gradient(135deg, #2B2B2B 0%, #3d3d3d 100%);
+      color: #fff; 
+      padding: 25px 5%; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header h1 { 
+      color: #C8A951; 
+      font-weight: 700; 
+      font-size: 28px; 
+      margin-bottom: 15px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    nav { 
+      display: flex; 
+      justify-content: center; 
+      flex-wrap: wrap; 
+      gap: 15px; 
+    }
+    nav a { 
+      color: #fff; 
+      text-decoration: none; 
+      font-weight: 600; 
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    nav a:hover, nav a.active { 
+      background: #C8A951; 
+      color: #2B2B2B;
+      transform: translateY(-2px);
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 60px 8%;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Page Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .page-header h2 {
+      color: #2B2B2B;
+      font-size: 36px;
+      margin-bottom: 15px;
+      border-bottom: 4px solid #C8A951;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    .page-header p {
+      color: #666;
+      font-size: 18px;
+      margin-top: 15px;
+      line-height: 1.6;
+    }
+
+    /* Gallery Grid - Masonry Layout */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    /* Gallery Item */
+    .gallery-item {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .gallery-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    
+    .gallery-media {
+      width: 100%;
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #C8A951 0%, #a08840 100%);
+    }
+    .gallery-media img, .gallery-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .gallery-item:hover .gallery-media img,
+    .gallery-item:hover .gallery-media video {
+      transform: scale(1.1);
+    }
+    
+    /* Video Play Overlay */
+    .video-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(200, 169, 81, 0.9);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      pointer-events: none;
+    }
+    
+    .gallery-info {
+      padding: 20px;
+    }
+    .gallery-item h3 {
+      color: #C8A951;
+      font-size: 18px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .gallery-item p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .gallery-date {
+      font-size: 13px;
+      color: #999;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.active {
+      display: flex;
+    }
+    .lightbox-content {
+      max-width: 90%;
+      max-height: 90%;
+      position: relative;
+      animation: zoomIn 0.3s ease;
+    }
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .lightbox-content img, .lightbox-content video {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 10px;
+      box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    }
+    .lightbox-info {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .lightbox-info h3 {
+      color: #C8A951;
+      margin-bottom: 5px;
+    }
+    .lightbox-info p {
+      color: #666;
+      font-size: 14px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #2B2B2B;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+    .lightbox-close:hover {
+      background: #C8A951;
+      transform: rotate(90deg);
+    }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      color: #2B2B2B;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .lightbox-nav:hover {
+      background: #C8A951;
+    }
+    .lightbox-prev {
+      left: 20px;
+    }
+    .lightbox-next {
+      right: 20px;
+    }
+
+    /* Loading & Empty States */
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      font-size: 20px;
+      color: #888;
+      grid-column: 1 / -1;
+    }
+    .loading-spinner {
+      font-size: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #999;
+      grid-column: 1 / -1;
+    }
+    .empty-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    .empty-state h3 {
+      font-size: 24px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    /* Firebase Status */
+    .firebase-status {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      z-index: 9999;
+      display: none;
+    }
+    .firebase-status.show { display: block; }
+    .firebase-status.connected { background: #28a745; }
+    .firebase-status.error { background: #dc3545; }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #2B2B2B 0%, #1a1a1a 100%);
+      color: #fff;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+      margin-top: auto;
+    }
+    footer p {
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+    .admin-link {
+      display: inline-block;
+      background: #C8A951;
+      color: #2B2B2B;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .admin-link:hover {
+      background: #7A6C4D;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 { font-size: 22px; }
+      .page-header h2 { font-size: 28px; }
+      main { padding: 40px 5%; }
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+      }
+      .lightbox-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+      .lightbox-prev { left: 10px; }
+      .lightbox-next { right: 10px; }
+      nav {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="firebase-status" id="firebaseStatus">🔄 جاري الاتصال...</div>
+
+<header>
+  <div class="container">
+    <h1>⛪ كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</h1>
+    <nav>
+      <a href="index.html">🏠 الرئيسية</a>
+      <a href="about.html">ℹ️ عن الكنيسة</a>
+      <a href="masses.html">🕊️ القداسات</a>
+      <a href="sermons.html">📖 العظات</a>
+      <a href="gallery.html" class="active">📸 معرض الصور</a>
+      <a href="contact.html">📞 تواصل معنا</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="page-header">
+    <h2>📸 معرض صور الكنيسة</h2>
+    <p>صور وفيديوهات من فعاليات وأنشطة كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</p>
+  </div>
+
+  <div class="gallery-grid" id="galleryContainer">
+    <div class="loading">
+      <div class="loading-spinner">⏳</div>
+      <p>جاري تحميل المعرض...</p>
+    </div>
+  </div>
+</main>
+
+<!-- Lightbox Modal -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">❮</button>
+  <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">❯</button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+</div>
+
+<footer>
+  <p>© 2025 كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات • جميع الحقوق محفوظة</p>
+  <a href="#" onclick="checkAdminAccess(event)" class="admin-link">🔐 لوحة التحكم</a>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>معرض الصور - كنيسة مارجرجس بالكابلات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #F6F3EE; 
+      color: #2B2B2B;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header { 
+      background: linear-gradient(135deg, #2B2B2B 0%, #3d3d3d 100%);
+      color: #fff; 
+      padding: 25px 5%; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header h1 { 
+      color: #C8A951; 
+      font-weight: 700; 
+      font-size: 28px; 
+      margin-bottom: 15px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    nav { 
+      display: flex; 
+      justify-content: center; 
+      flex-wrap: wrap; 
+      gap: 15px; 
+    }
+    nav a { 
+      color: #fff; 
+      text-decoration: none; 
+      font-weight: 600; 
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    nav a:hover, nav a.active { 
+      background: #C8A951; 
+      color: #2B2B2B;
+      transform: translateY(-2px);
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 60px 8%;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Page Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .page-header h2 {
+      color: #2B2B2B;
+      font-size: 36px;
+      margin-bottom: 15px;
+      border-bottom: 4px solid #C8A951;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    .page-header p {
+      color: #666;
+      font-size: 18px;
+      margin-top: 15px;
+      line-height: 1.6;
+    }
+
+    /* Gallery Grid - Masonry Layout */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    /* Gallery Item */
+    .gallery-item {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .gallery-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    
+    .gallery-media {
+      width: 100%;
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #C8A951 0%, #a08840 100%);
+    }
+    .gallery-media img, .gallery-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .gallery-item:hover .gallery-media img,
+    .gallery-item:hover .gallery-media video {
+      transform: scale(1.1);
+    }
+    
+    /* Video Play Overlay */
+    .video-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(200, 169, 81, 0.9);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      pointer-events: none;
+    }
+    
+    .gallery-info {
+      padding: 20px;
+    }
+    .gallery-item h3 {
+      color: #C8A951;
+      font-size: 18px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .gallery-item p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .gallery-date {
+      font-size: 13px;
+      color: #999;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.active {
+      display: flex;
+    }
+    .lightbox-content {
+      max-width: 90%;
+      max-height: 90%;
+      position: relative;
+      animation: zoomIn 0.3s ease;
+    }
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .lightbox-content img, .lightbox-content video {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 10px;
+      box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    }
+    .lightbox-info {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .lightbox-info h3 {
+      color: #C8A951;
+      margin-bottom: 5px;
+    }
+    .lightbox-info p {
+      color: #666;
+      font-size: 14px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #2B2B2B;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+    .lightbox-close:hover {
+      background: #C8A951;
+      transform: rotate(90deg);
+    }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      color: #2B2B2B;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .lightbox-nav:hover {
+      background: #C8A951;
+    }
+    .lightbox-prev {
+      left: 20px;
+    }
+    .lightbox-next {
+      right: 20px;
+    }
+
+    /* Loading & Empty States */
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      font-size: 20px;
+      color: #888;
+      grid-column: 1 / -1;
+    }
+    .loading-spinner {
+      font-size: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #999;
+      grid-column: 1 / -1;
+    }
+    .empty-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    .empty-state h3 {
+      font-size: 24px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    /* Firebase Status */
+    .firebase-status {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      z-index: 9999;
+      display: none;
+    }
+    .firebase-status.show { display: block; }
+    .firebase-status.connected { background: #28a745; }
+    .firebase-status.error { background: #dc3545; }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #2B2B2B 0%, #1a1a1a 100%);
+      color: #fff;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+      margin-top: auto;
+    }
+    footer p {
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+    .admin-link {
+      display: inline-block;
+      background: #C8A951;
+      color: #2B2B2B;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .admin-link:hover {
+      background: #7A6C4D;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 { font-size: 22px; }
+      .page-header h2 { font-size: 28px; }
+      main { padding: 40px 5%; }
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+      }
+      .lightbox-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+      .lightbox-prev { left: 10px; }
+      .lightbox-next { right: 10px; }
+      nav {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="firebase-status" id="firebaseStatus">🔄 جاري الاتصال...</div>
+
+<header>
+  <div class="container">
+    <h1>⛪ كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</h1>
+    <nav>
+      <a href="index.html">🏠 الرئيسية</a>
+      <a href="about.html">ℹ️ عن الكنيسة</a>
+      <a href="masses.html">🕊️ القداسات</a>
+      <a href="sermons.html">📖 العظات</a>
+      <a href="gallery.html" class="active">📸 معرض الصور</a>
+      <a href="contact.html">📞 تواصل معنا</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="page-header">
+    <h2>📸 معرض صور الكنيسة</h2>
+    <p>صور وفيديوهات من فعاليات وأنشطة كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</p>
+  </div>
+
+  <div class="gallery-grid" id="galleryContainer">
+    <div class="loading">
+      <div class="loading-spinner">⏳</div>
+      <p>جاري تحميل المعرض...</p>
+    </div>
+  </div>
+</main>
+
+<!-- Lightbox Modal -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">❮</button>
+  <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">❯</button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+</div>
+
+<footer>
+  <p>© 2025 كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات • جميع الحقوق محفوظة</p>
+  <a href="#" onclick="checkAdminAccess(event)" class="admin-link">🔐 لوحة التحكم</a>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+let app, db, isFirebaseConnected = false;
+let galleryItems = [];
+let currentIndex = 0;
+
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  isFirebaseConnected = true;
+  showFirebaseStatus('✅ متصل بـ Firebase', 'connected');
+} catch (error) {
+  console.error('❌ خطأ في الاتصال:', error);
+  showFirebaseStatus('❌ خطأ في الاتصال', 'error');
+}
+
+function showFirebaseStatus(message, type) {
+  const status = document.getElementById('firebaseStatus');
+  status.textContent = message;
+  status.className = `firebase-status show ${type}`;
+  setTimeout(() => status.classList.remove('show'), 3000);
+}
+
+async function loadGallery() {
+  const container = document.getElementById('galleryContainer');
+
+  try {
+    if (isFirebaseConnected) {
+      const q = query(collection(db, 'gallery'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      galleryItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } else {
+      galleryItems = getMockGallery();
+    }
+
+    if (galleryItems.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📸</div>
+          <h3>لا توجد صور في المعرض</h3>
+          <p>سيتم إضافة الصور قريباً</p>
+        </div>
+      `;
+    } else {
+      container.innerHTML = galleryItems.map((item, index) => renderGalleryItem(item, index)).join('');
+    }
+  } catch (error) {
+    console.error('❌ خطأ في التحميل:', error);
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <h3>حدث خطأ في تحميل البيانات</h3>
+        <p>يرجى المحاولة مرة أخرى</p>
+      </div>
+    `;
+  }
+}
+
+function renderGalleryItem(item, index) {
+  const hasMedia = item.mediaUrls && item.mediaUrls.length > 0;
+  const mediaUrl = hasMedia ? item.mediaUrls[0] : 'https://via.placeholder.com/400x300/C8A951/FFFFFF?text=Church';
+  const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+
+  return `
+    <div class="gallery-item" onclick="openLightbox(${index})">
+      <div class="gallery-media">
+        ${isVideo ? 
+          `<video src="${mediaUrl}"></video>
+           <div class="video-overlay">▶</div>` :
+          `<img src="${mediaUrl}" alt="${item.title}" loading="lazy">`
+        }
+      </div>
+      <div class="gallery-info">
+        <h3>${item.title}</h3>
+        ${item.description ? `<p>${item.description}</p>` : ''}
+        ${item.createdAt ? `
+          <div class="gallery-date">
+            📅 ${formatDate(item.createdAt)}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+window.openLightbox = function(index) {
+  currentIndex = index;
+  const item = galleryItems[index];
+  const lightbox = document.getElementById('lightbox');
+  const content = document.getElementById('lightboxContent');
+  
+  const hasMedia = item.mediaUrls && item.mediaUrls.length > 0;
+  const mediaUrl = hasMedia ? item.mediaUrls[0] : 'https://via.placeholder.com/800x600/C8A951/FFFFFF?text=Church';
+  const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+
+  content.innerHTML = `
+    ${isVideo ? 
+      `<video src="${mediaUrl}" controls autoplay style="max-width: 100%; max-height: 85vh; border-radius: 10px;"></video>` :
+      `<img src="${mediaUrl}" alt="${item.title}">`
+    }
+    <div class="lightbox-info">
+      <h3>${item.title}</h3>
+      ${item.description ? `<p>${item.description}</p>` : ''}
+    </div>
+  `;
+  
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeLightbox = function() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.classList.remove('active');
+  document.body.style.overflow = 'auto';
+  
+  // إيقاف الفيديو إن وُجد
+  const video = lightbox.querySelector('video');
+  if (video) video.pause();
+};
+
+window.navigateLightbox = function(direction) {
+  currentIndex += direction;
+  if (currentIndex < 0) currentIndex = galleryItems.length - 1;
+  if (currentIndex >= galleryItems.length) currentIndex = 0;
+  openLightbox(currentIndex);
+};
+
+// إغلاق عند الضغط على ESC
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navigateLightbox(1);
+  if (e.key === 'ArrowRight') navigateLightbox(-1);
+});
+
+// إغلاق عند الضغط خارج الصورة
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') closeLightbox();
+});
+
+function getMockGallery() {
+  return [
+    {
+      id: '1',
+      title: 'قداس عيد القيامة المجيد',
+      description: 'احتفالات عيد القيامة المجيد 2025',
+      mediaUrls: ['https://via.placeholder.com/600x400/C8A951/FFFFFF?text=Easter+Mass'],
+      createdAt: new Date(2025, 3, 20).toISOString()
+    },
+    {
+      id: '2',
+      title: 'اجتماع خدمة الشباب',
+      description: 'لقاء خدمة الشباب الأسبوعي',
+      mediaUrls: ['https://via.placeholder.com/600x400/7A6C4D/FFFFFF?text=Youth+Service'],
+      createdAt: new Date(2025, 0, 10).toISOString()
+    },
+    {
+      id: '3',
+      title: 'مدارس الأحد',
+      description: 'أطفال مدارس الأحد في نشاط ترفيهي',
+      mediaUrls: ['https://via.placeholder.com/600x400/a08840/FFFFFF?text=Sunday+School'],
+      createdAt: new Date(2025, 0, 5).toISOString()
+    },
+    {
+      id: '4',
+      title: 'الكنيسة من الخارج',
+      description: 'منظر خارجي للكنيسة',
+      mediaUrls: ['https://via.placeholder.com/600x400/C8A951/FFFFFF?text=Church+Exterior'],
+      createdAt: new Date(2024, 11, 25).toISOString()
+    },
+    {
+      id: '5',
+      title: 'المذبح المقدس',
+      description: 'منظر داخلي للمذبح المقدس',
+      mediaUrls: ['https://via.placeholder.com/600x400/7A6C4D/FFFFFF?text=Holy+Altar'],
+      createdAt: new Date(2024, 11, 20).toISOString()
+    },
+    {
+      id: '6',
+      title: 'احتفال عيد الميلاد',
+      description: 'احتفالات عيد الميلاد المجيد 2024',
+      mediaUrls: ['https://via.placeholder.com/600x400/a08840/FFFFFF?text=Christmas'],
+      createdAt: new Date(2024, 11, 25).toISOString()
+    }
+  ];
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr.toDate();
+  return date.toLocaleDateString('ar-EG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+window.checkAdminAccess = function(event) {
+  event.preventDefault();
+  const password = prompt("🔐 ادخل كلمة المرور:");
+  if (password === "12345") {
+    window.location.href = "dashboard.html";
+  } else if (password !== null) {
+    alert("❌ كلمة المرور خاطئة!");
+  }
+};
+
+window.addEventListener('DOMContentLoaded', loadGallery);
+setInterval(loadGallery, 5 * 60 * 1000);
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>معرض الصور - كنيسة مارجرجس بالكابلات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #F6F3EE; 
+      color: #2B2B2B;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header { 
+      background: linear-gradient(135deg, #2B2B2B 0%, #3d3d3d 100%);
+      color: #fff; 
+      padding: 25px 5%; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header h1 { 
+      color: #C8A951; 
+      font-weight: 700; 
+      font-size: 28px; 
+      margin-bottom: 15px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    nav { 
+      display: flex; 
+      justify-content: center; 
+      flex-wrap: wrap; 
+      gap: 15px; 
+    }
+    nav a { 
+      color: #fff; 
+      text-decoration: none; 
+      font-weight: 600; 
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    nav a:hover, nav a.active { 
+      background: #C8A951; 
+      color: #2B2B2B;
+      transform: translateY(-2px);
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 60px 8%;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Page Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .page-header h2 {
+      color: #2B2B2B;
+      font-size: 36px;
+      margin-bottom: 15px;
+      border-bottom: 4px solid #C8A951;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    .page-header p {
+      color: #666;
+      font-size: 18px;
+      margin-top: 15px;
+      line-height: 1.6;
+    }
+
+    /* Gallery Grid - Masonry Layout */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    /* Gallery Item */
+    .gallery-item {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .gallery-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    
+    .gallery-media {
+      width: 100%;
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #C8A951 0%, #a08840 100%);
+    }
+    .gallery-media img, .gallery-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .gallery-item:hover .gallery-media img,
+    .gallery-item:hover .gallery-media video {
+      transform: scale(1.1);
+    }
+    
+    /* Video Play Overlay */
+    .video-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(200, 169, 81, 0.9);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      pointer-events: none;
+    }
+    
+    .gallery-info {
+      padding: 20px;
+    }
+    .gallery-item h3 {
+      color: #C8A951;
+      font-size: 18px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .gallery-item p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .gallery-date {
+      font-size: 13px;
+      color: #999;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.active {
+      display: flex;
+    }
+    .lightbox-content {
+      max-width: 90%;
+      max-height: 90%;
+      position: relative;
+      animation: zoomIn 0.3s ease;
+    }
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .lightbox-content img, .lightbox-content video {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 10px;
+      box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    }
+    .lightbox-info {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .lightbox-info h3 {
+      color: #C8A951;
+      margin-bottom: 5px;
+    }
+    .lightbox-info p {
+      color: #666;
+      font-size: 14px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #2B2B2B;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+    .lightbox-close:hover {
+      background: #C8A951;
+      transform: rotate(90deg);
+    }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      color: #2B2B2B;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .lightbox-nav:hover {
+      background: #C8A951;
+    }
+    .lightbox-prev {
+      left: 20px;
+    }
+    .lightbox-next {
+      right: 20px;
+    }
+
+    /* Loading & Empty States */
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      font-size: 20px;
+      color: #888;
+      grid-column: 1 / -1;
+    }
+    .loading-spinner {
+      font-size: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #999;
+      grid-column: 1 / -1;
+    }
+    .empty-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    .empty-state h3 {
+      font-size: 24px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    /* Firebase Status */
+    .firebase-status {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      z-index: 9999;
+      display: none;
+    }
+    .firebase-status.show { display: block; }
+    .firebase-status.connected { background: #28a745; }
+    .firebase-status.error { background: #dc3545; }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #2B2B2B 0%, #1a1a1a 100%);
+      color: #fff;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+      margin-top: auto;
+    }
+    footer p {
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+    .admin-link {
+      display: inline-block;
+      background: #C8A951;
+      color: #2B2B2B;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .admin-link:hover {
+      background: #7A6C4D;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 { font-size: 22px; }
+      .page-header h2 { font-size: 28px; }
+      main { padding: 40px 5%; }
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+      }
+      .lightbox-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+      .lightbox-prev { left: 10px; }
+      .lightbox-next { right: 10px; }
+      nav {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="firebase-status" id="firebaseStatus">🔄 جاري الاتصال...</div>
+
+<header>
+  <div class="container">
+    <h1>⛪ كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</h1>
+    <nav>
+      <a href="index.html">🏠 الرئيسية</a>
+      <a href="about.html">ℹ️ عن الكنيسة</a>
+      <a href="masses.html">🕊️ القداسات</a>
+      <a href="sermons.html">📖 العظات</a>
+      <a href="gallery.html" class="active">📸 معرض الصور</a>
+      <a href="contact.html">📞 تواصل معنا</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="page-header">
+    <h2>📸 معرض صور الكنيسة</h2>
+    <p>صور وفيديوهات من فعاليات وأنشطة كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</p>
+  </div>
+
+  <div class="gallery-grid" id="galleryContainer">
+    <div class="loading">
+      <div class="loading-spinner">⏳</div>
+      <p>جاري تحميل المعرض...</p>
+    </div>
+  </div>
+</main>
+
+<!-- Lightbox Modal -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">❮</button>
+  <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">❯</button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+</div>
+
+<footer>
+  <p>© 2025 كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات • جميع الحقوق محفوظة</p>
+  <a href="#" onclick="checkAdminAccess(event)" class="admin-link">🔐 لوحة التحكم</a>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+let app, db, isFirebaseConnected = false;
+let galleryItems = [];
+let currentIndex = 0;
+
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  isFirebaseConnected = true;
+  showFirebaseStatus('✅ متصل بـ Firebase', 'connected');
+} catch (error) {
+  console.error('❌ خطأ في الاتصال:', error);
+  showFirebaseStatus('❌ خطأ في الاتصال', 'error');
+}
+
+function showFirebaseStatus(message, type) {
+  const status = document.getElementById('firebaseStatus');
+  status.textContent = message;
+  status.className = `firebase-status show ${type}`;
+  setTimeout(() => status.classList.remove('show'), 3000);
+}
+
+async function loadGallery() {
+  const container = document.getElementById('galleryContainer');
+
+  try {
+    if (isFirebaseConnected) {
+      const q = query(collection(db, 'gallery'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      galleryItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } else {
+      galleryItems = getMockGallery();
+    }
+
+    if (galleryItems.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📸</div>
+          <h3>لا توجد صور في المعرض</h3>
+          <p>سيتم إضافة الصور قريباً</p>
+        </div>
+      `;
+    } else {
+      container.innerHTML = galleryItems.map((item, index) => renderGalleryItem(item, index)).join('');
+    }
+  } catch (error) {
+    console.error('❌ خطأ في التحميل:', error);
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <h3>حدث خطأ في تحميل البيانات</h3>
+        <p>يرجى المحاولة مرة أخرى</p>
+      </div>
+    `;
+  }
+}
+
+function renderGalleryItem(item, index) {
+  const hasMedia = item.mediaUrls && item.mediaUrls.length > 0;
+  const mediaUrl = hasMedia ? item.mediaUrls[0] : 'https://via.placeholder.com/400x300/C8A951/FFFFFF?text=Church';
+  const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+
+  return `
+    <div class="gallery-item" onclick="openLightbox(${index})">
+      <div class="gallery-media">
+        ${isVideo ? 
+          `<video src="${mediaUrl}"></video>
+           <div class="video-overlay">▶</div>` :
+          `<img src="${mediaUrl}" alt="${item.title}" loading="lazy">`
+        }
+      </div>
+      <div class="gallery-info">
+        <h3>${item.title}</h3>
+        ${item.description ? `<p>${item.description}</p>` : ''}
+        ${item.createdAt ? `
+          <div class="gallery-date">
+            📅 ${formatDate(item.createdAt)}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+window.openLightbox = function(index) {
+  currentIndex = index;
+  const item = galleryItems[index];
+  const lightbox = document.getElementById('lightbox');
+  const content = document.getElementById('lightboxContent');
+  
+  const hasMedia = item.mediaUrls && item.mediaUrls.length > 0;
+  const mediaUrl = hasMedia ? item.mediaUrls[0] : 'https://via.placeholder.com/800x600/C8A951/FFFFFF?text=Church';
+  const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+
+  content.innerHTML = `
+    ${isVideo ? 
+      `<video src="${mediaUrl}" controls autoplay style="max-width: 100%; max-height: 85vh; border-radius: 10px;"></video>` :
+      `<img src="${mediaUrl}" alt="${item.title}">`
+    }
+    <div class="lightbox-info">
+      <h3>${item.title}</h3>
+      ${item.description ? `<p>${item.description}</p>` : ''}
+    </div>
+  `;
+  
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeLightbox = function() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.classList.remove('active');
+  document.body.style.overflow = 'auto';
+  
+  // إيقاف الفيديو إن وُجد
+  const video = lightbox.querySelector('video');
+  if (video) video.pause();
+};
+
+window.navigateLightbox = function(direction) {
+  currentIndex += direction;
+  if (currentIndex < 0) currentIndex = galleryItems.length - 1;
+  if (currentIndex >= galleryItems.length) currentIndex = 0;
+  openLightbox(currentIndex);
+};
+
+// إغلاق عند الضغط على ESC
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navigateLightbox(1);
+  if (e.key === 'ArrowRight') navigateLightbox(-1);
+});
+
+// إغلاق عند الضغط خارج الصورة
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') closeLightbox();
+});
+
+function getMockGallery() {
+  return [
+    {
+      id: '1',
+      title: 'قداس عيد القيامة المجيد',
+      description: 'احتفالات عيد القيامة المجيد 2025',
+      mediaUrls: ['https://via.placeholder.com/600x400/C8A951/FFFFFF?text=Easter+Mass'],
+      createdAt: new Date(2025, 3, 20).toISOString()
+    },
+    {
+      id: '2',
+      title: 'اجتماع خدمة الشباب',
+      description: 'لقاء خدمة الشباب الأسبوعي',
+      mediaUrls: ['https://via.placeholder.com/600x400/7A6C4D/FFFFFF?text=Youth+Service'],
+      createdAt: new Date(2025, 0, 10).toISOString()
+    },
+    {
+      id: '3',
+      title: 'مدارس الأحد',
+      description: 'أطفال مدارس الأحد في نشاط ترفيهي',
+      mediaUrls: ['https://via.placeholder.com/600x400/a08840/FFFFFF?text=Sunday+School'],
+      createdAt: new Date(2025, 0, 5).toISOString()
+    },
+    {
+      id: '4',
+      title: 'الكنيسة من الخارج',
+      description: 'منظر خارجي للكنيسة',
+      mediaUrls: ['https://via.placeholder.com/600x400/C8A951/FFFFFF?text=Church+Exterior'],
+      createdAt: new Date(2024, 11, 25).toISOString()
+    },
+    {
+      id: '5',
+      title: 'المذبح المقدس',
+      description: 'منظر داخلي للمذبح المقدس',
+      mediaUrls: ['https://via.placeholder.com/600x400/7A6C4D/FFFFFF?text=Holy+Altar'],
+      createdAt: new Date(2024, 11, 20).toISOString()
+    },
+    {
+      id: '6',
+      title: 'احتفال عيد الميلاد',
+      description: 'احتفالات عيد الميلاد المجيد 2024',
+      mediaUrls: ['https://via.placeholder.com/600x400/a08840/FFFFFF?text=Christmas'],
+      createdAt: new Date(2024, 11, 25).toISOString()
+    }
+  ];
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr.toDate();
+  return date.toLocaleDateString('ar-EG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+window.checkAdminAccess = function(event) {
+  event.preventDefault();
+  const password = prompt("🔐 ادخل كلمة المرور:");
+  if (password === "12345") {
+    window.location.href = "dashboard.html";
+  } else if (password !== null) {
+    alert("❌ كلمة المرور خاطئة!");
+  }
+};
+
+window.addEventListener('DOMContentLoaded', loadGallery);
+setInterval(loadGallery, 5 * 60 * 1000);
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>معرض الصور - كنيسة مارجرجس بالكابلات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #F6F3EE; 
+      color: #2B2B2B;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header { 
+      background: linear-gradient(135deg, #2B2B2B 0%, #3d3d3d 100%);
+      color: #fff; 
+      padding: 25px 5%; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header h1 { 
+      color: #C8A951; 
+      font-weight: 700; 
+      font-size: 28px; 
+      margin-bottom: 15px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    nav { 
+      display: flex; 
+      justify-content: center; 
+      flex-wrap: wrap; 
+      gap: 15px; 
+    }
+    nav a { 
+      color: #fff; 
+      text-decoration: none; 
+      font-weight: 600; 
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    nav a:hover, nav a.active { 
+      background: #C8A951; 
+      color: #2B2B2B;
+      transform: translateY(-2px);
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 60px 8%;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Page Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .page-header h2 {
+      color: #2B2B2B;
+      font-size: 36px;
+      margin-bottom: 15px;
+      border-bottom: 4px solid #C8A951;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    .page-header p {
+      color: #666;
+      font-size: 18px;
+      margin-top: 15px;
+      line-height: 1.6;
+    }
+
+    /* Gallery Grid - Masonry Layout */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    /* Gallery Item */
+    .gallery-item {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .gallery-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    
+    .gallery-media {
+      width: 100%;
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #C8A951 0%, #a08840 100%);
+    }
+    .gallery-media img, .gallery-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .gallery-item:hover .gallery-media img,
+    .gallery-item:hover .gallery-media video {
+      transform: scale(1.1);
+    }
+    
+    /* Video Play Overlay */
+    .video-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(200, 169, 81, 0.9);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      pointer-events: none;
+    }
+    
+    .gallery-info {
+      padding: 20px;
+    }
+    .gallery-item h3 {
+      color: #C8A951;
+      font-size: 18px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .gallery-item p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .gallery-date {
+      font-size: 13px;
+      color: #999;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.active {
+      display: flex;
+    }
+    .lightbox-content {
+      max-width: 90%;
+      max-height: 90%;
+      position: relative;
+      animation: zoomIn 0.3s ease;
+    }
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .lightbox-content img, .lightbox-content video {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 10px;
+      box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    }
+    .lightbox-info {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .lightbox-info h3 {
+      color: #C8A951;
+      margin-bottom: 5px;
+    }
+    .lightbox-info p {
+      color: #666;
+      font-size: 14px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #2B2B2B;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+    .lightbox-close:hover {
+      background: #C8A951;
+      transform: rotate(90deg);
+    }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      color: #2B2B2B;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .lightbox-nav:hover {
+      background: #C8A951;
+    }
+    .lightbox-prev {
+      left: 20px;
+    }
+    .lightbox-next {
+      right: 20px;
+    }
+
+    /* Loading & Empty States */
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      font-size: 20px;
+      color: #888;
+      grid-column: 1 / -1;
+    }
+    .loading-spinner {
+      font-size: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #999;
+      grid-column: 1 / -1;
+    }
+    .empty-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    .empty-state h3 {
+      font-size: 24px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    /* Firebase Status */
+    .firebase-status {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      z-index: 9999;
+      display: none;
+    }
+    .firebase-status.show { display: block; }
+    .firebase-status.connected { background: #28a745; }
+    .firebase-status.error { background: #dc3545; }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #2B2B2B 0%, #1a1a1a 100%);
+      color: #fff;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+      margin-top: auto;
+    }
+    footer p {
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+    .admin-link {
+      display: inline-block;
+      background: #C8A951;
+      color: #2B2B2B;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .admin-link:hover {
+      background: #7A6C4D;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 { font-size: 22px; }
+      .page-header h2 { font-size: 28px; }
+      main { padding: 40px 5%; }
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+      }
+      .lightbox-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+      .lightbox-prev { left: 10px; }
+      .lightbox-next { right: 10px; }
+      nav {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="firebase-status" id="firebaseStatus">🔄 جاري الاتصال...</div>
+
+<header>
+  <div class="container">
+    <h1>⛪ كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</h1>
+    <nav>
+      <a href="index.html">🏠 الرئيسية</a>
+      <a href="about.html">ℹ️ عن الكنيسة</a>
+      <a href="masses.html">🕊️ القداسات</a>
+      <a href="sermons.html">📖 العظات</a>
+      <a href="gallery.html" class="active">📸 معرض الصور</a>
+      <a href="contact.html">📞 تواصل معنا</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="page-header">
+    <h2>📸 معرض صور الكنيسة</h2>
+    <p>صور وفيديوهات من فعاليات وأنشطة كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات</p>
+  </div>
+
+  <div class="gallery-grid" id="galleryContainer">
+    <div class="loading">
+      <div class="loading-spinner">⏳</div>
+      <p>جاري تحميل المعرض...</p>
+    </div>
+  </div>
+</main>
+
+<!-- Lightbox Modal -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">❮</button>
+  <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">❯</button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+</div>
+
+<footer>
+  <p>© 2025 كنيسة السيدة العذراء والشهيد مارجرجس بالكابلات • جميع الحقوق محفوظة</p>
+  <a href="#" onclick="checkAdminAccess(event)" class="admin-link">🔐 لوحة التحكم</a>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+ const firebaseConfig = {
+    apiKey: "AIzaSyCHpkIlf8A13cL6TLggr7-3u8FM-PxzfSY",
+    authDomain: "activitiescommittee-5b22c.firebaseapp.com",
+    projectId: "activitiescommittee-5b22c",
+    storageBucket: "activitiescommittee-5b22c.firebasestorage.app",
+    messagingSenderId: "378991885059",
+    appId: "1:378991885059:web:d8db039a6fc569fffb8736"
+  };
+
+let app, db, isFirebaseConnected = false;
+let galleryItems = [];
+let currentIndex = 0;
+
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  isFirebaseConnected = true;
+  showFirebaseStatus('✅ متصل بـ Firebase', 'connected');
+} catch (error) {
+  console.error('❌ خطأ في الاتصال:', error);
+  showFirebaseStatus('❌ خطأ في الاتصال', 'error');
+}
+
+function showFirebaseStatus(message, type) {
+  const status = document.getElementById('firebaseStatus');
+  status.textContent = message;
+  status.className = `firebase-status show ${type}`;
+  setTimeout(() => status.classList.remove('show'), 3000);
+}
+
+async function loadGallery() {
+  const container = document.getElementById('galleryContainer');
+
+  try {
+    if (isFirebaseConnected) {
+      const q = query(collection(db, 'gallery'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      galleryItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } else {
+      galleryItems = getMockGallery();
+    }
+
+    if (galleryItems.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📸</div>
+          <h3>لا توجد صور في المعرض</h3>
+          <p>سيتم إضافة الصور قريباً</p>
+        </div>
+      `;
+    } else {
+      container.innerHTML = galleryItems.map((item, index) => renderGalleryItem(item, index)).join('');
+    }
+  } catch (error) {
+    console.error('❌ خطأ في التحميل:', error);
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <h3>حدث خطأ في تحميل البيانات</h3>
+        <p>يرجى المحاولة مرة أخرى</p>
+      </div>
+    `;
+  }
+}
+
+function renderGalleryItem(item, index) {
+  const hasMedia = item.mediaUrls && item.mediaUrls.length > 0;
+  const mediaUrl = hasMedia ? item.mediaUrls[0] : 'https://via.placeholder.com/400x300/C8A951/FFFFFF?text=Church';
+  const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+
+  return `
+    <div class="gallery-item" onclick="openLightbox(${index})">
+      <div class="gallery-media">
+        ${isVideo ? 
+          `<video src="${mediaUrl}"></video>
+           <div class="video-overlay">▶</div>` :
+          `<img src="${mediaUrl}" alt="${item.title}" loading="lazy">`
+        }
+      </div>
+      <div class="gallery-info">
+        <h3>${item.title}</h3>
+        ${item.description ? `<p>${item.description}</p>` : ''}
+        ${item.createdAt ? `
+          <div class="gallery-date">
+            📅 ${formatDate(item.createdAt)}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+window.openLightbox = function(index) {
+  currentIndex = index;
+  const item = galleryItems[index];
+  const lightbox = document.getElementById('lightbox');
+  const content = document.getElementById('lightboxContent');
+  
+  const hasMedia = item.mediaUrls && item.mediaUrls.length > 0;
+  const mediaUrl = hasMedia ? item.mediaUrls[0] : 'https://via.placeholder.com/800x600/C8A951/FFFFFF?text=Church';
+  const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+
+  content.innerHTML = `
+    ${isVideo ? 
+      `<video src="${mediaUrl}" controls autoplay style="max-width: 100%; max-height: 85vh; border-radius: 10px;"></video>` :
+      `<img src="${mediaUrl}" alt="${item.title}">`
+    }
+    <div class="lightbox-info">
+      <h3>${item.title}</h3>
+      ${item.description ? `<p>${item.description}</p>` : ''}
+    </div>
+  `;
+  
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeLightbox = function() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.classList.remove('active');
+  document.body.style.overflow = 'auto';
+  
+  // إيقاف الفيديو إن وُجد
+  const video = lightbox.querySelector('video');
+  if (video) video.pause();
+};
+
+window.navigateLightbox = function(direction) {
+  currentIndex += direction;
+  if (currentIndex < 0) currentIndex = galleryItems.length - 1;
+  if (currentIndex >= galleryItems.length) currentIndex = 0;
+  openLightbox(currentIndex);
+};
+
+// إغلاق عند الضغط على ESC
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navigateLightbox(1);
+  if (e.key === 'ArrowRight') navigateLightbox(-1);
+});
+
+// إغلاق عند الضغط خارج الصورة
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') closeLightbox();
+});
+
+function getMockGallery() {
+  return [
+    {
+      id: '1',
+      title: 'قداس عيد القيامة المجيد',
+      description: 'احتفالات عيد القيامة المجيد 2025',
+      mediaUrls: ['https://via.placeholder.com/600x400/C8A951/FFFFFF?text=Easter+Mass'],
+      createdAt: new Date(2025, 3, 20).toISOString()
+    },
+    {
+      id: '2',
+      title: 'اجتماع خدمة الشباب',
+      description: 'لقاء خدمة الشباب الأسبوعي',
+      mediaUrls: ['https://via.placeholder.com/600x400/7A6C4D/FFFFFF?text=Youth+Service'],
+      createdAt: new Date(2025, 0, 10).toISOString()
+    },
+    {
+      id: '3',
+      title: 'مدارس الأحد',
+      description: 'أطفال مدارس الأحد في نشاط ترفيهي',
+      mediaUrls: ['https://via.placeholder.com/600x400/a08840/FFFFFF?text=Sunday+School'],
+      createdAt: new Date(2025, 0, 5).toISOString()
+    },
+    {
+      id: '4',
+      title: 'الكنيسة من الخارج',
+      description: 'منظر خارجي للكنيسة',
+      mediaUrls: ['https://via.placeholder.com/600x400/C8A951/FFFFFF?text=Church+Exterior'],
+      createdAt: new Date(2024, 11, 25).toISOString()
+    },
+    {
+      id: '5',
+      title: 'المذبح المقدس',
+      description: 'منظر داخلي للمذبح المقدس',
+      mediaUrls: ['https://via.placeholder.com/600x400/7A6C4D/FFFFFF?text=Holy+Altar'],
+      createdAt: new Date(2024, 11, 20).toISOString()
+    },
+    {
+      id: '6',
+      title: 'احتفال عيد الميلاد',
+      description: 'احتفالات عيد الميلاد المجيد 2024',
+      mediaUrls: ['https://via.placeholder.com/600x400/a08840/FFFFFF?text=Christmas'],
+      createdAt: new Date(2024, 11, 25).toISOString()
+    }
+  ];
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr.toDate();
+  return date.toLocaleDateString('ar-EG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+window.checkAdminAccess = function(event) {
+  event.preventDefault();
+  const password = prompt("🔐 ادخل كلمة المرور:");
+  if (password === "12345") {
+    window.location.href = "dashboard.html";
+  } else if (password !== null) {
+    alert("❌ كلمة المرور خاطئة!");
+  }
+};
+
+window.addEventListener('DOMContentLoaded', loadGallery);
+setInterval(loadGallery, 5 * 60 * 1000);
+</script>
+
+</body>
+</html>
+
+let app, db, isFirebaseConnected = false;
+let galleryItems = [];
+let currentIndex = 0;
+
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  isFirebaseConnected = true;
+  showFirebaseStatus('✅ متصل بـ Firebase', 'connected');
+} catch (error) {
+  console.error('❌ خطأ في الاتصال:', error);
+  showFirebaseStatus('❌ خطأ في الاتصال', 'error');
+}
+
+function showFirebaseStatus(message, type) {
+  const status = document.getElementById('firebaseStatus');
+  status.textContent = message;
+  status.className = `firebase-status show ${type}`;
+  setTimeout(() => status.classList.remove('show'), 3000);
+}
+
+async function loadGallery() {
+  const container = document.getElementById('galleryContainer');
+
+  try {
+    if (isFirebaseConnected) {
+      const q = query(collection(db, 'gallery'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      galleryItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } else {
+      galleryItems = getMockGallery();
+    }
+
+    if (galleryItems.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📸</div>
+          <h3>لا توجد صور في المعرض</h3>
+          <p>سيتم إضافة الصور قريباً</p>
+        </div>
+      `;
+    } else {
+      container.innerHTML = galleryItems.map((item, index) => renderGalleryItem(item, index)).join('');
+    }
+  } catch (error) {
+    console.error('❌ خطأ في التحميل:', error);
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <h3>حدث خطأ في تحميل البيانات</h3>
+        <p>يرجى المحاولة مرة أخرى</p>
+      </div>
+    `;
+  }
+}
+
+function renderGalleryItem(item, index) {
+  const hasMedia = item.mediaUrls && item.mediaUrls.length > 0;
+  const mediaUrl = hasMedia ? item.mediaUrls[0] : 'https://via.placeholder.com/400x300/C8A951/FFFFFF?text=Church';
+  const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+
+  return `
+    <div class="gallery-item" onclick="openLightbox(${index})">
+      <div class="gallery-media">
+        ${isVideo ? 
+          `<video src="${mediaUrl}"></video>
+           <div class="video-overlay">▶</div>` :
+          `<img src="${mediaUrl}" alt="${item.title}" loading="lazy">`
+        }
+      </div>
+      <div class="gallery-info">
+        <h3>${item.title}</h3>
+        ${item.description ? `<p>${item.description}</p>` : ''}
+        ${item.createdAt ? `
+          <div class="gallery-date">
+            📅 ${formatDate(item.createdAt)}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+window.openLightbox = function(index) {
+  currentIndex = index;
+  const item = galleryItems[index];
+  const lightbox = document.getElementById('lightbox');
+  const content = document.getElementById('lightboxContent');
+  
+  const hasMedia = item.mediaUrls && item.mediaUrls.length > 0;
+  const mediaUrl = hasMedia ? item.mediaUrls[0] : 'https://via.placeholder.com/800x600/C8A951/FFFFFF?text=Church';
+  const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+
+  content.innerHTML = `
+    ${isVideo ? 
+      `<video src="${mediaUrl}" controls autoplay style="max-width: 100%; max-height: 85vh; border-radius: 10px;"></video>` :
+      `<img src="${mediaUrl}" alt="${item.title}">`
+    }
+    <div class="lightbox-info">
+      <h3>${item.title}</h3>
+      ${item.description ? `<p>${item.description}</p>` : ''}
+    </div>
+  `;
+  
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeLightbox = function() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.classList.remove('active');
+  document.body.style.overflow = 'auto';
+  
+  // إيقاف الفيديو إن وُجد
+  const video = lightbox.querySelector('video');
+  if (video) video.pause();
+};
+
+window.navigateLightbox = function(direction) {
+  currentIndex += direction;
+  if (currentIndex < 0) currentIndex = galleryItems.length - 1;
+  if (currentIndex >= galleryItems.length) currentIndex = 0;
+  openLightbox(currentIndex);
+};
+
+// إغلاق عند الضغط على ESC
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navigateLightbox(1);
+  if (e.key === 'ArrowRight') navigateLightbox(-1);
+});
+
+// إغلاق عند الضغط خارج الصورة
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') closeLightbox();
+});
+
+function getMockGallery() {
+  return [
+    {
+      id: '1',
+      title: 'قداس عيد القيامة المجيد',
+      description: 'احتفالات عيد القيامة المجيد 2025',
+      mediaUrls: ['https://via.placeholder.com/600x400/C8A951/FFFFFF?text=Easter+Mass'],
+      createdAt: new Date(2025, 3, 20).toISOString()
+    },
+    {
+      id: '2',
+      title: 'اجتماع خدمة الشباب',
+      description: 'لقاء خدمة الشباب الأسبوعي',
+      mediaUrls: ['https://via.placeholder.com/600x400/7A6C4D/FFFFFF?text=Youth+Service'],
+      createdAt: new Date(2025, 0, 10).toISOString()
+    },
+    {
+      id: '3',
+      title: 'مدارس الأحد',
+      description: 'أطفال مدارس الأحد في نشاط ترفيهي',
+      mediaUrls: ['https://via.placeholder.com/600x400/a08840/FFFFFF?text=Sunday+School'],
+      createdAt: new Date(2025, 0, 5).toISOString()
+    },
+    {
+      id: '4',
+      title: 'الكنيسة من الخارج',
+      description: 'منظر خارجي للكنيسة',
+      mediaUrls: ['https://via.placeholder.com/600x400/C8A951/FFFFFF?text=Church+Exterior'],
+      createdAt: new Date(2024, 11, 25).toISOString()
+    },
+    {
+      id: '5',
+      title: 'المذبح المقدس',
+      description: 'منظر داخلي للمذبح المقدس',
+      mediaUrls: ['https://via.placeholder.com/600x400/7A6C4D/FFFFFF?text=Holy+Altar'],
+      createdAt: new Date(2024, 11, 20).toISOString()
+    },
+    {
+      id: '6',
+      title: 'احتفال عيد الميلاد',
+      description: 'احتفالات عيد الميلاد المجيد 2024',
+      mediaUrls: ['https://via.placeholder.com/600x400/a08840/FFFFFF?text=Christmas'],
+      createdAt: new Date(2024, 11, 25).toISOString()
+    }
+  ];
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr.toDate();
+  return date.toLocaleDateString('ar-EG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+window.checkAdminAccess = function(event) {
+  event.preventDefault();
+  const password = prompt("🔐 ادخل كلمة المرور:");
+  if (password === "12345") {
+    window.location.href = "dashboard.html";
+  } else if (password !== null) {
+    alert("❌ كلمة المرور خاطئة!");
+  }
+};
+
+window.addEventListener('DOMContentLoaded', loadGallery);
+setInterval(loadGallery, 5 * 60 * 1000);
+</script>
+
+</body>
+</html>
