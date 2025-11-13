@@ -18,7 +18,6 @@
       flex-direction: column;
     }
 
-    /* Header */
     header { 
       background: linear-gradient(135deg, #2B2B2B 0%, #3d3d3d 100%);
       color: #fff; 
@@ -60,7 +59,6 @@
       transform: translateY(-2px);
     }
 
-    /* Main Content */
     main {
       flex: 1;
       padding: 60px 8%;
@@ -69,7 +67,6 @@
       width: 100%;
     }
 
-    /* Page Header */
     .page-header {
       text-align: center;
       margin-bottom: 50px;
@@ -89,7 +86,6 @@
       line-height: 1.6;
     }
 
-    /* Sermons Grid */
     .sermons-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -97,7 +93,6 @@
       margin-top: 40px;
     }
 
-    /* Sermon Card */
     .sermon-card {
       background: #fff;
       border-radius: 15px;
@@ -112,25 +107,22 @@
       box-shadow: 0 12px 35px rgba(0,0,0,0.2);
     }
     
-    .sermon-media {
+    .card-media {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #C8A951 0%, #a08840 100%);
+      display: block;
+    }
+    .card-placeholder {
       width: 100%;
       height: 220px;
       background: linear-gradient(135deg, #C8A951 0%, #a08840 100%);
-      position: relative;
-      overflow: hidden;
-    }
-    .sermon-media img, .sermon-media video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .sermon-media::after {
-      content: '📖';
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      font-size: 40px;
-      opacity: 0.3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      color: rgba(255,255,255,0.4);
     }
     
     .sermon-content {
@@ -144,6 +136,7 @@
       font-size: 22px;
       margin-bottom: 15px;
       line-height: 1.4;
+      font-weight: 700;
     }
     .sermon-card p {
       color: #555;
@@ -152,20 +145,61 @@
       margin-bottom: 15px;
       flex-grow: 1;
     }
+    
+    .card-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 2px solid #f0f0f0;
+    }
+    .view-details {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #C8A951;
+      color: #2B2B2B;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+    .view-details:hover {
+      background: #7A6C4D;
+      color: #fff;
+      transform: translateX(-5px);
+    }
+    .media-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 12px;
+      background: #f0f0f0;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #666;
+      font-weight: 600;
+    }
+
     .sermon-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 15px;
-      border-top: 2px solid #f0f0f0;
-      font-size: 14px;
-      color: #888;
+      flex-wrap: wrap;
       gap: 10px;
+      font-size: 14px;
+      margin-bottom: 10px;
     }
     .sermon-date {
       display: flex;
       align-items: center;
       gap: 5px;
+      color: #888;
     }
     .sermon-speaker {
       display: flex;
@@ -175,12 +209,104 @@
       font-weight: 600;
     }
 
-    /* Loading & Empty States */
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      overflow: auto;
+    }
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-content {
+      background: #fff;
+      margin: 20px;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideIn 0.3s ease;
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #888;
+      cursor: pointer;
+      background: #f0f0f0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .modal-close:hover {
+      background: #C8A951;
+      color: #fff;
+    }
+    .modal h3 {
+      color: #C8A951;
+      font-size: 26px;
+      margin-bottom: 20px;
+      padding-right: 50px;
+    }
+    .modal p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .modal-media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .modal-media-grid img,
+    .modal-media-grid video {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .modal-media-grid img:hover,
+    .modal-media-grid video:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
     .loading {
       text-align: center;
       padding: 80px 20px;
       font-size: 20px;
-      color: #888;
+      color: #C8A951;
+      font-weight: 600;
       grid-column: 1 / -1;
     }
     .loading-spinner {
@@ -208,7 +334,6 @@
       margin-bottom: 10px;
     }
 
-    /* Firebase Status */
     .firebase-status {
       position: fixed;
       top: 10px;
@@ -225,7 +350,6 @@
     .firebase-status.connected { background: #28a745; }
     .firebase-status.error { background: #dc3545; }
 
-    /* Footer */
     footer {
       background: linear-gradient(135deg, #2B2B2B 0%, #1a1a1a 100%);
       color: #fff;
@@ -254,7 +378,6 @@
       transform: translateY(-2px);
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       header h1 { font-size: 22px; }
       .page-header h2 { font-size: 28px; }
@@ -267,12 +390,24 @@
         flex-direction: column;
         align-items: center;
       }
+      .modal-content {
+        padding: 20px;
+        margin: 10px;
+      }
     }
   </style>
 </head>
 <body>
 
 <div class="firebase-status" id="firebaseStatus">🔄 جاري الاتصال...</div>
+
+<!-- Modal -->
+<div class="modal" id="detailsModal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeModal()">&times;</span>
+    <div id="modalBody"></div>
+  </div>
+</div>
 
 <header>
   <div class="container">
@@ -311,24 +446,25 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
- const firebaseConfig = {
-    apiKey: "AIzaSyCHpkIlf8A13cL6TLggr7-3u8FM-PxzfSY",
-    authDomain: "activitiescommittee-5b22c.firebaseapp.com",
-    projectId: "activitiescommittee-5b22c",
-    storageBucket: "activitiescommittee-5b22c.firebasestorage.app",
-    messagingSenderId: "378991885059",
-    appId: "1:378991885059:web:d8db039a6fc569fffb8736"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCHpkIlf8A13cL6TLggr7-3u8FM-PxzfSY",
+  authDomain: "activitiescommittee-5b22c.firebaseapp.com",
+  projectId: "activitiescommittee-5b22c",
+  storageBucket: "activitiescommittee-5b22c.firebasestorage.app",
+  messagingSenderId: "378991885059",
+  appId: "1:378991885059:web:d8db039a6fc569fffb8736"
+};
 
 let app, db, isFirebaseConnected = false;
+window.allSermons = [];
 
 try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
   isFirebaseConnected = true;
-  showFirebaseStatus('✅ متصل بـ Firebase', 'connected');
+  showFirebaseStatus('✅ متصل', 'connected');
 } catch (error) {
-  console.error('❌ خطأ في الاتصال:', error);
+  console.error('❌ خطأ:', error);
   showFirebaseStatus('❌ خطأ في الاتصال', 'error');
 }
 
@@ -349,23 +485,23 @@ async function loadSermons() {
       const q = query(collection(db, 'sermons'), orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
       sermons = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } else {
-      sermons = getMockSermons();
     }
+
+    window.allSermons = sermons;
 
     if (sermons.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">📖</div>
           <h3>لا توجد عظات محفوظة</h3>
-          <p>سيتم إضافة العظات قريباً</p>
+          <p>سيتم إضافة العظات من لوحة التحكم</p>
         </div>
       `;
     } else {
       container.innerHTML = sermons.map(sermon => renderSermonCard(sermon)).join('');
     }
   } catch (error) {
-    console.error('❌ خطأ في التحميل:', error);
+    console.error('❌ خطأ:', error);
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">⚠️</div>
@@ -380,19 +516,22 @@ function renderSermonCard(sermon) {
   const hasMedia = sermon.mediaUrls && sermon.mediaUrls.length > 0;
   const mediaUrl = hasMedia ? sermon.mediaUrls[0] : '';
   const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+  const description = sermon.description || 'لا يوجد وصف';
+  const shortDesc = description.length > 120 ? description.substring(0, 120) + '...' : description;
 
   return `
     <div class="sermon-card">
-      <div class="sermon-media">
-        ${hasMedia ? (isVideo ? 
-          `<video src="${mediaUrl}" controls></video>` :
-          `<img src="${mediaUrl}" alt="${sermon.title}" loading="lazy">`) : 
-          ''
-        }
-      </div>
+      ${hasMedia ? 
+        (isVideo ? 
+          `<video class="card-media" src="${mediaUrl}" controls></video>` :
+          `<img class="card-media" src="${mediaUrl}" alt="${sermon.title}" loading="lazy">`) 
+        : 
+        `<div class="card-placeholder">📖</div>`
+      }
       <div class="sermon-content">
         <h3>${sermon.title}</h3>
-        <p>${sermon.description || 'لا يوجد وصف'}</p>
+        <p>${shortDesc}</p>
+        
         <div class="sermon-meta">
           <span class="sermon-date">
             📅 ${formatDate(sermon.createdAt)}
@@ -403,35 +542,61 @@ function renderSermonCard(sermon) {
             </span>
           ` : ''}
         </div>
+
+        <div class="card-footer">
+          <button class="view-details" onclick="showDetails('${sermon.id}')">
+            👁️ عرض التفاصيل
+          </button>
+          ${hasMedia && sermon.mediaUrls.length > 1 ? 
+            `<span class="media-count">📸 ${sermon.mediaUrls.length} وسائط</span>` 
+            : ''}
+        </div>
       </div>
     </div>
   `;
 }
 
-function getMockSermons() {
-  return [
-    {
-      id: '1',
-      title: 'الإيمان والرجاء',
-      description: 'عظة عن أهمية الإيمان والرجاء في حياة المؤمن وكيفية تطبيقهما في الحياة اليومية',
-      speaker: 'أبونا يوسف',
-      createdAt: new Date(2025, 0, 15).toISOString()
-    },
-    {
-      id: '2',
-      title: 'المحبة والغفران',
-      description: 'تعاليم روحية عن المحبة الحقيقية والغفران من القلب',
-      speaker: 'أبونا بولس',
-      createdAt: new Date(2025, 0, 8).toISOString()
-    },
-    {
-      id: '3',
-      title: 'الصلاة والتأمل',
-      description: 'كيف نصلي بروح وحق ونتأمل في كلمة الله',
-      speaker: 'أبونا يوسف',
-      createdAt: new Date(2025, 0, 1).toISOString()
-    }
-  ];
+window.showDetails = function(sermonId) {
+  const sermon = window.allSermons.find(s => s.id === sermonId);
+  if (!sermon) return;
+  
+  const modal = document.getElementById('detailsModal');
+  const modalBody = document.getElementById('modalBody');
+  
+  let mediaHtml = '';
+  if (sermon.mediaUrls && sermon.mediaUrls.length > 0) {
+    mediaHtml = '<div class="modal-media-grid">';
+    sermon.mediaUrls.forEach(url => {
+      const isVideo = url.includes('.mp4') || url.includes('.webm') || url.includes('video');
+      if (isVideo) {
+        mediaHtml += `<video src="${url}" controls></video>`;
+      } else {
+        mediaHtml += `<img src="${url}" alt="صورة" onclick="window.open('${url}', '_blank')">`;
+      }
+    });
+    mediaHtml += '</div>';
+  }
+  
+  modalBody.innerHTML = `
+    <h3>📖 ${sermon.title}</h3>
+    ${sermon.speaker ? `<div class="sermon-speaker"><span>👤</span><span>${sermon.speaker}</span></div>` : ''}
+    ${sermon.description ? `<p>${sermon.description}</p>` : ''}
+    ${sermon.createdAt ? `<div class="sermon-date">📅 ${formatDate(sermon.createdAt)}</div>` : ''}
+    ${mediaHtml}
+  `;
+  
+  modal.classList.add('show');
+}
+
+window.closeModal = function() {
+  document.getElementById('detailsModal').classList.remove('show');
+}
+
+window.onclick = function(event) {
+  const modal = document.getElementById('detailsModal');
+  if (event.target === modal) {
+    closeModal();
+  }
 }
 
 function formatDate(dateStr) {

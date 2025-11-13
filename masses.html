@@ -92,7 +92,7 @@
     /* Masses Grid */
     .masses-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       gap: 30px;
       margin-top: 40px;
     }
@@ -101,24 +101,44 @@
     .mass-card {
       background: #fff;
       border-radius: 15px;
-      padding: 30px;
+      overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,0.12);
       transition: all 0.3s ease;
       text-align: right;
       position: relative;
-      overflow: hidden;
-    }
-    .mass-card::before {
-      content: '🕊️';
-      position: absolute;
-      top: -20px;
-      right: -20px;
-      font-size: 120px;
-      opacity: 0.05;
+      display: flex;
+      flex-direction: column;
     }
     .mass-card:hover {
       transform: translateY(-8px);
       box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+    }
+
+    /* Card Media */
+    .card-media {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #C8A951 0%, #a08840 100%);
+      display: block;
+    }
+    .card-placeholder {
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(135deg, #C8A951 0%, #a08840 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* Card Content */
+    .card-content {
+      padding: 25px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
     }
     .mass-card h3 {
       color: #C8A951;
@@ -127,6 +147,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      font-weight: 700;
     }
     .mass-icon {
       font-size: 28px;
@@ -135,7 +156,8 @@
       color: #555;
       font-size: 16px;
       line-height: 1.8;
-      margin-bottom: 12px;
+      margin-bottom: 15px;
+      flex-grow: 1;
     }
     .mass-time {
       display: flex;
@@ -144,27 +166,151 @@
       color: #C8A951;
       font-weight: 600;
       font-size: 18px;
-      margin-top: 15px;
-      padding-top: 15px;
-      border-top: 2px solid #f0f0f0;
+      margin: 15px 0;
+      padding: 12px;
+      background: #fffbf0;
+      border-radius: 8px;
     }
     .mass-date {
       font-size: 14px;
       color: #888;
-      margin-top: 10px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    /* Media Section */
-    .mass-media {
-      margin-top: 20px;
-      border-radius: 10px;
-      overflow: hidden;
+    /* Card Footer */
+    .card-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 2px solid #f0f0f0;
     }
-    .mass-media img, .mass-media video {
+    .view-details {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #C8A951;
+      color: #2B2B2B;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+    .view-details:hover {
+      background: #7A6C4D;
+      color: #fff;
+      transform: translateX(-5px);
+    }
+    .media-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 12px;
+      background: #f0f0f0;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      overflow: auto;
+    }
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-content {
+      background: #fff;
+      margin: 20px;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideIn 0.3s ease;
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #888;
+      cursor: pointer;
+      background: #f0f0f0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .modal-close:hover {
+      background: #C8A951;
+      color: #fff;
+    }
+    .modal h3 {
+      color: #C8A951;
+      font-size: 26px;
+      margin-bottom: 20px;
+      padding-right: 50px;
+    }
+    .modal p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .modal-media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .modal-media-grid img,
+    .modal-media-grid video {
       width: 100%;
       height: 200px;
       object-fit: cover;
-      display: block;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .modal-media-grid img:hover,
+    .modal-media-grid video:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     /* Loading & Empty States */
@@ -172,7 +318,9 @@
       text-align: center;
       padding: 80px 20px;
       font-size: 20px;
-      color: #888;
+      color: #C8A951;
+      font-weight: 600;
+      grid-column: 1 / -1;
     }
     .loading-spinner {
       font-size: 50px;
@@ -186,6 +334,7 @@
       text-align: center;
       padding: 80px 20px;
       color: #999;
+      grid-column: 1 / -1;
     }
     .empty-icon {
       font-size: 80px;
@@ -257,6 +406,10 @@
         flex-direction: column;
         align-items: center;
       }
+      .modal-content {
+        padding: 20px;
+        margin: 10px;
+      }
     }
   </style>
 </head>
@@ -264,6 +417,14 @@
 
 <!-- مؤشر حالة Firebase -->
 <div class="firebase-status" id="firebaseStatus">🔄 جاري الاتصال...</div>
+
+<!-- Modal لعرض التفاصيل -->
+<div class="modal" id="detailsModal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeModal()">&times;</span>
+    <div id="modalBody"></div>
+  </div>
+</div>
 
 <header>
   <div class="container">
@@ -299,51 +460,41 @@
 </footer>
 
 <script type="module">
-// ==========================================
-// 🔥 إعدادات Firebase
-// ==========================================
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-// ⚠️ استبدل هذه البيانات ببياناتك من Firebase Console
- const firebaseConfig = {
-    apiKey: "AIzaSyCHpkIlf8A13cL6TLggr7-3u8FM-PxzfSY",
-    authDomain: "activitiescommittee-5b22c.firebaseapp.com",
-    projectId: "activitiescommittee-5b22c",
-    storageBucket: "activitiescommittee-5b22c.firebasestorage.app",
-    messagingSenderId: "378991885059",
-    appId: "1:378991885059:web:d8db039a6fc569fffb8736"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCHpkIlf8A13cL6TLggr7-3u8FM-PxzfSY",
+  authDomain: "activitiescommittee-5b22c.firebaseapp.com",
+  projectId: "activitiescommittee-5b22c",
+  storageBucket: "activitiescommittee-5b22c.firebasestorage.app",
+  messagingSenderId: "378991885059",
+  appId: "1:378991885059:web:d8db039a6fc569fffb8736"
+};
 
 let app, db;
 let isFirebaseConnected = false;
 
-// محاولة الاتصال بـ Firebase
 try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
   isFirebaseConnected = true;
-  showFirebaseStatus('✅ متصل بـ Firebase', 'connected');
-  console.log('✅ Firebase متصل بنجاح');
+  showFirebaseStatus('✅ متصل', 'connected');
 } catch (error) {
-  console.error('❌ خطأ في الاتصال بـ Firebase:', error);
+  console.error('❌ خطأ:', error);
   showFirebaseStatus('❌ خطأ في الاتصال', 'error');
-  isFirebaseConnected = false;
 }
 
-// دالة عرض حالة Firebase
 function showFirebaseStatus(message, type) {
   const status = document.getElementById('firebaseStatus');
   status.textContent = message;
   status.className = `firebase-status show ${type}`;
-  setTimeout(() => {
-    status.classList.remove('show');
-  }, 3000);
+  setTimeout(() => status.classList.remove('show'), 3000);
 }
 
-// ==========================================
-// 📥 جلب بيانات القداسات
-// ==========================================
+// حفظ البيانات للاستخدام في Modal
+window.allMasses = [];
+
 async function loadMasses() {
   const container = document.getElementById('massesContainer');
 
@@ -351,25 +502,22 @@ async function loadMasses() {
     let masses = [];
 
     if (isFirebaseConnected) {
-      // جلب البيانات من Firebase
       const q = query(collection(db, 'masses'), orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
       masses = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
-    } else {
-      // بيانات تجريبية
-      masses = getMockMasses();
     }
 
-    // عرض البيانات
+    window.allMasses = masses;
+
     if (masses.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">🕊️</div>
           <h3>لا توجد قداسات محفوظة</h3>
-          <p>سيتم إضافة مواعيد القداسات قريباً</p>
+          <p>سيتم إضافة مواعيد القداسات من لوحة التحكم</p>
         </div>
       `;
     } else {
@@ -377,97 +525,110 @@ async function loadMasses() {
     }
 
   } catch (error) {
-    console.error('❌ خطأ في تحميل القداسات:', error);
+    console.error('❌ خطأ:', error);
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">⚠️</div>
         <h3>حدث خطأ في تحميل البيانات</h3>
-        <p>يرجى المحاولة مرة أخرى لاحقاً</p>
+        <p>يرجى المحاولة مرة أخرى</p>
       </div>
     `;
   }
 }
 
-// ==========================================
-// 🎨 عرض بطاقة القداس
-// ==========================================
 function renderMassCard(mass) {
   const hasMedia = mass.mediaUrls && mass.mediaUrls.length > 0;
   const mediaUrl = hasMedia ? mass.mediaUrls[0] : '';
   const isVideo = mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') || mediaUrl.includes('video'));
+  const description = mass.description || 'لا يوجد وصف';
+  const shortDesc = description.length > 100 ? description.substring(0, 100) + '...' : description;
 
   return `
     <div class="mass-card">
-      <h3>
-        <span class="mass-icon">⛪</span>
-        ${mass.title}
-      </h3>
-      <p>${mass.description || 'لا يوجد وصف'}</p>
+      ${hasMedia ? 
+        (isVideo ? 
+          `<video class="card-media" src="${mediaUrl}" controls></video>` :
+          `<img class="card-media" src="${mediaUrl}" alt="${mass.title}" loading="lazy">`) 
+        : 
+        `<div class="card-placeholder">🕊️</div>`
+      }
       
-      ${mass.time ? `
-        <div class="mass-time">
-          <span>🕐</span>
-          <span>${mass.time}</span>
+      <div class="card-content">
+        <h3>
+          <span class="mass-icon">⛪</span>
+          ${mass.title}
+        </h3>
+        <p>${shortDesc}</p>
+        
+        ${mass.time ? `
+          <div class="mass-time">
+            <span>🕐</span>
+            <span>${mass.time}</span>
+          </div>
+        ` : ''}
+        
+        ${mass.createdAt ? `
+          <div class="mass-date">
+            📅 ${formatDate(mass.createdAt)}
+          </div>
+        ` : ''}
+        
+        <div class="card-footer">
+          <button class="view-details" onclick="showDetails('${mass.id}')">
+            👁️ عرض التفاصيل
+          </button>
+          ${hasMedia && mass.mediaUrls.length > 1 ? 
+            `<span class="media-count">📸 ${mass.mediaUrls.length} وسائط</span>` 
+            : ''}
         </div>
-      ` : ''}
-      
-      ${hasMedia ? `
-        <div class="mass-media">
-          ${isVideo ? 
-            `<video src="${mediaUrl}" controls></video>` :
-            `<img src="${mediaUrl}" alt="${mass.title}" loading="lazy">`
-          }
-        </div>
-      ` : ''}
-      
-      ${mass.createdAt ? `
-        <div class="mass-date">
-          📅 تم الإضافة: ${formatDate(mass.createdAt)}
-        </div>
-      ` : ''}
+      </div>
     </div>
   `;
 }
 
-// ==========================================
-// 🎭 بيانات تجريبية
-// ==========================================
-function getMockMasses() {
-  return [
-    {
-      id: '1',
-      title: 'قداس الجمعة',
-      description: 'القداس الإلهي يوم الجمعة من كل أسبوع',
-      time: 'من ٦:٠٠ ص حتى ٨:٠٠ ص',
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: '2',
-      title: 'قداس الأحد',
-      description: 'القداس الإلهي يوم الأحد - قداس رئيسي',
-      time: 'من ٧:٠٠ ص حتى ٩:٣٠ ص',
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: '3',
-      title: 'قداس الأعياد',
-      description: 'القداسات الخاصة بالأعياد الكنسية والمناسبات الدينية',
-      time: 'حسب جدول الأعياد الكنسية الرسمية',
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: '4',
-      title: 'قداس منتصف الأسبوع',
-      description: 'القداس الإلهي يوم الأربعاء',
-      time: 'من ٦:٣٠ ص حتى ٨:٣٠ ص',
-      createdAt: new Date().toISOString()
-    }
-  ];
+window.showDetails = function(massId) {
+  const mass = window.allMasses.find(m => m.id === massId);
+  if (!mass) return;
+  
+  const modal = document.getElementById('detailsModal');
+  const modalBody = document.getElementById('modalBody');
+  
+  let mediaHtml = '';
+  if (mass.mediaUrls && mass.mediaUrls.length > 0) {
+    mediaHtml = '<div class="modal-media-grid">';
+    mass.mediaUrls.forEach(url => {
+      const isVideo = url.includes('.mp4') || url.includes('.webm') || url.includes('video');
+      if (isVideo) {
+        mediaHtml += `<video src="${url}" controls></video>`;
+      } else {
+        mediaHtml += `<img src="${url}" alt="صورة" onclick="window.open('${url}', '_blank')">`;
+      }
+    });
+    mediaHtml += '</div>';
+  }
+  
+  modalBody.innerHTML = `
+    <h3>🕊️ ${mass.title}</h3>
+    ${mass.time ? `<div class="mass-time"><span>🕐</span><span>${mass.time}</span></div>` : ''}
+    ${mass.description ? `<p>${mass.description}</p>` : ''}
+    ${mass.createdAt ? `<div class="mass-date">📅 ${formatDate(mass.createdAt)}</div>` : ''}
+    ${mediaHtml}
+  `;
+  
+  modal.classList.add('show');
 }
 
-// ==========================================
-// 🛠️ دوال مساعدة
-// ==========================================
+window.closeModal = function() {
+  document.getElementById('detailsModal').classList.remove('show');
+}
+
+window.onclick = function(event) {
+  const modal = document.getElementById('detailsModal');
+  if (event.target === modal) {
+    closeModal();
+  }
+}
+
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr.toDate();
@@ -478,12 +639,9 @@ function formatDate(dateStr) {
   });
 }
 
-// ==========================================
-// 🔐 حماية لوحة التحكم
-// ==========================================
 window.checkAdminAccess = function(event) {
   event.preventDefault();
-  const password = prompt("🔐 ادخل كلمة المرور للوصول للوحة التحكم:");
+  const password = prompt("🔐 ادخل كلمة المرور:");
   if (password === "12345") {
     window.location.href = "dashboard.html";
   } else if (password !== null) {
@@ -491,14 +649,9 @@ window.checkAdminAccess = function(event) {
   }
 };
 
-// ==========================================
-// 🚀 بدء التطبيق
-// ==========================================
 window.addEventListener('DOMContentLoaded', loadMasses);
-
-// إعادة التحميل كل 5 دقائق
 setInterval(loadMasses, 5 * 60 * 1000);
 </script>
 
 </body>
-</html
+</html>
